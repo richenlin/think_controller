@@ -6,10 +6,11 @@
  * @version    17/6/1
  */
 const lib = require('think_lib');
-
+let thinkkoa_caches = global.thinkkoa_caches || {};
 /**
  * 
  * 
+ * @param {any} app 
  * @param {any} ctx 
  * @param {any} options 
  * @param {any} group 
@@ -17,7 +18,7 @@ const lib = require('think_lib');
  * @param {any} action 
  * @returns 
  */
-const execAction = function (ctx, options, group, controller, action) {
+const exec = function (app, ctx, options, group, controller, action) {
     group = group || '';
     controller = controller || '';
     action = action || '';
@@ -28,11 +29,11 @@ const execAction = function (ctx, options, group, controller, action) {
     try {
         //multi mod
         if (group) {
-            cls = think._caches.controllers[`${group}/${controller}`];
+            cls = thinkkoa_caches.controllers[`${group}/${controller}`];
         } else {
-            cls = think._caches.controllers[controller];
+            cls = thinkkoa_caches.controllers[controller];
         }
-        instance = new cls(ctx);
+        instance = new cls(ctx, app);
     } catch (e) {
         ctx.throw(404, `Controller ${group ? group + '/' : ''}${controller} not found.`);
     }
@@ -78,18 +79,19 @@ const defaultOptions = {
     self_before: '_before_', //控制器类某个方法自身的前置方法(前缀),该方法执行时自动调用
 };
 
-module.exports = function (options) {
+module.exports = function (options, app) {
     options = options ? lib.extend(defaultOptions, options, true) : defaultOptions;
-    think.app.once('appReady', () => {
-        lib.define(think, 'action', function (name, ctx) {
+    app = app || think.app;
+    app.once('appReady', () => {
+        global.think && lib.define(think, 'action', function (name, ctx) {
             name = name.split('/');
             if (name.length < 2 || !name[0]) {
                 return ctx.throw(404, `When call think.action, controller is undefined,  `);
             }
-            return execAction(ctx, options, name[2] ? name[0] : '', name[2] ? name[1] : name[0], name[2] ? name[2] : name[1]);
+            return exec(app, ctx, options, name[2] ? name[0] : '', name[2] ? name[1] : name[0], name[2] ? name[2] : name[1]);
         });
     });
     return function (ctx, next) {
-        return execAction(ctx, options, ctx.group, ctx.controller, ctx.action);
+        return exec(app, ctx, options, ctx.group, ctx.controller, ctx.action);
     };
 };
