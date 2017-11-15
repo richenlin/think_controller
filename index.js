@@ -6,7 +6,6 @@
  * @version    17/6/1
  */
 const lib = require('think_lib');
-let thinkkoa_caches = global.thinkkoa_caches || {};
 /**
  * 
  * 
@@ -25,13 +24,13 @@ const exec = function (app, ctx, options, group, controller, action) {
     if (!controller) {
         ctx.throw(404, 'Controller not found.');
     }
-    let instance, cls;
+    let instance, cls, caches = app.controllers || think._caches.controllers;
     try {
         //multi mod
         if (group) {
-            cls = thinkkoa_caches.controllers[`${group}/${controller}`];
+            cls = caches[`${group}/${controller}`];
         } else {
-            cls = thinkkoa_caches.controllers[controller];
+            cls = caches[controller];
         }
         instance = new cls(ctx, app);
     } catch (e) {
@@ -81,8 +80,8 @@ const defaultOptions = {
 
 module.exports = function (options, app) {
     options = options ? lib.extend(defaultOptions, options, true) : defaultOptions;
-    app = app || think.app;
-    app.once('appReady', () => {
+    let koa = global.think ? (think.app || {}) : (app.koa || {});
+    koa.once('appReady', () => {
         global.think && lib.define(think, 'action', function (name, ctx) {
             name = name.split('/');
             if (name.length < 2 || !name[0]) {
