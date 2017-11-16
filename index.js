@@ -24,7 +24,7 @@ const exec = function (app, ctx, options, group, controller, action) {
     if (!controller) {
         ctx.throw(404, 'Controller not found.');
     }
-    let instance, cls, caches = app.controllers || think._caches.controllers;
+    let instance, cls, caches = app.controllers || {};
     try {
         //multi mod
         if (group) {
@@ -80,16 +80,6 @@ const defaultOptions = {
 
 module.exports = function (options, app) {
     options = options ? lib.extend(defaultOptions, options, true) : defaultOptions;
-    let koa = global.think ? (think.app || {}) : (app.koa || {});
-    koa.once('appReady', () => {
-        global.think && lib.define(think, 'action', function (name, ctx) {
-            name = name.split('/');
-            if (name.length < 2 || !name[0]) {
-                return ctx.throw(404, `When call think.action, controller is undefined,  `);
-            }
-            return exec(app, ctx, options, name[2] ? name[0] : '', name[2] ? name[1] : name[0], name[2] ? name[2] : name[1]);
-        });
-    });
     return function (ctx, next) {
         return exec(app, ctx, options, ctx.group, ctx.controller, ctx.action);
     };
