@@ -12,11 +12,16 @@
   "engines": {
     "node": ">6.0.0"
   },
-  "author": "richenlin",
+  "author": {
+    "name": "richenlin",
+    "email": "richenlin@gmail.com"
+  },
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thinkkoa/think_controller/issues"
+  },
+  "homepage": "https://github.com/thinkkoa/think_controller",
   "devDependencies": {
-    "babel-core": "^6.24.1",
-    "babel-eslint": "^7.2.3",
     "eslint": "^3.19.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.4.2"
