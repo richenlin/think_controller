@@ -14,6 +14,10 @@
   },
   "author": "richenlin",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thinkkoa/think_controller/issues"
+  },
+  "homepage": "https://github.com/thinkkoa/think_controller",
   "devDependencies": {
     "eslint": "^4.4.1",
     "istanbul": "^1.1.0-alpha.1",
@@ -21,6 +25,6 @@
     "supertest": "^3.0.0"
   },
   "dependencies": {
-    "think_lib": "^1.x.x"
+    "think_lib": "^2.x.x"
   }
 }
