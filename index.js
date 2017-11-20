@@ -32,7 +32,7 @@ const exec = function (app, ctx, options, group, controller, action) {
         } else {
             cls = caches[controller];
         }
-        instance = new cls(ctx, app);
+        instance = new cls({ctx: ctx, app: app});
     } catch (e) {
         ctx.throw(404, `Controller ${group ? group + '/' : ''}${controller} not found.`);
     }
