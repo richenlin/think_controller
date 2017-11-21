@@ -32,9 +32,9 @@ const exec = function (app, ctx, options, group, controller, action) {
         } else {
             cls = caches[controller];
         }
-        instance = new cls({ctx: ctx, app: app});
+        instance = new cls(ctx, app);
     } catch (e) {
-        ctx.throw(404, `Controller ${group ? group + '/' : ''}${controller} not found.`);
+        ctx.throw(404, app.app_debug ? e : `Controller ${group ? group + '/' : ''}${controller} not found.`);
     }
     //exec action
     const suffix = options.action_suffix || 'Action';
