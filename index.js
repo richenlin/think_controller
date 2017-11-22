@@ -32,6 +32,9 @@ const exec = function (app, ctx, options, group, controller, action) {
         } else {
             cls = caches[controller];
         }
+        if (!cls) {
+            ctx.throw(404, 'Controller not found.');
+        }
         instance = new cls(ctx, app);
     } catch (e) {
         ctx.throw(404, app.app_debug ? e : `Controller ${group ? group + '/' : ''}${controller} not found.`);
